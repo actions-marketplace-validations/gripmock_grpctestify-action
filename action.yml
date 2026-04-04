@@ -1,0 +1,47 @@
+name: "gRPC Testify Action"
+description: "Install and run grpctestify in GitHub Actions"
+author: "gripmock"
+
+inputs:
+  command:
+    description: "grpctestify command (run, check, fmt)"
+    required: false
+    default: "run"
+  path:
+    description: "Primary path argument (file or directory)"
+    required: false
+    default: ""
+  paths:
+    description: "Additional path arguments, one per line"
+    required: false
+    default: ""
+  version:
+    description: "grpctestify version: latest, x.y.z, or vx.y.z"
+    required: false
+    default: "latest"
+  github-token:
+    description: "GitHub token for authenticated release API fallback"
+    required: false
+    default: ""
+  install-only:
+    description: "Only install grpctestify and add it to PATH"
+    required: false
+    default: "false"
+
+outputs:
+  version:
+    description: "Resolved grpctestify version"
+  binary-path:
+    description: "Path to downloaded grpctestify binary"
+  command-line:
+    description: "Final grpctestify command arguments"
+  exit-code:
+    description: "grpctestify process exit code"
+
+runs:
+  using: "node24"
+  main: "dist/main.js"
+
+branding:
+  icon: "check-circle"
+  color: "blue"

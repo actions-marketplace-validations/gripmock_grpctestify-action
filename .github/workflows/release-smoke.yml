@@ -1,0 +1,69 @@
+name: release-smoke
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: install (${{ matrix.version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ["1.4.10", "latest"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install grpctestify only
+        id: install
+        uses: ./
+        with:
+          install-only: true
+          version: ${{ matrix.version }}
+
+      - name: Verify install outputs
+        run: |
+          test -n "${{ steps.install.outputs.version }}"
+          test -n "${{ steps.install.outputs.binary-path }}"
+          "${{ steps.install.outputs.binary-path }}" --version
+
+  integration:
+    name: integration (${{ matrix.command }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        command: ["run", "check", "fmt"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Start GripMock
+        if: matrix.command == 'run'
+        uses: bavix/gripmock-action@v1
+        with:
+          source: testdata/greeter/greeter.proto
+          stub: testdata/greeter/stubs
+          version: latest
+          wait: true
+          wait-timeout: 60s
+
+      - name: Run grpctestify action
+        id: grpctestify
+        uses: ./
+        with:
+          version: 1.4.10
+          command: ${{ matrix.command }}
+          path: testdata/greeter/greeter.gctf
+
+      - name: Verify command outputs
+        run: |
+          test -n "${{ steps.grpctestify.outputs.version }}"
+          test -n "${{ steps.grpctestify.outputs.binary-path }}"
+          test -n "${{ steps.grpctestify.outputs.command-line }}"
+          test "${{ steps.grpctestify.outputs.exit-code }}" = "0"

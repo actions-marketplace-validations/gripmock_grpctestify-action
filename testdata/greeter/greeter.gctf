@@ -1,0 +1,13 @@
+--- ADDRESS ---
+127.0.0.1:4770
+
+--- ENDPOINT ---
+helloworld.Greeter/SayHello
+
+--- REQUEST ---
+{
+  "name": "CI"
+}
+
+--- ASSERTS ---
+.message == "Hello CI"
