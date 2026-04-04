@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: ["run", "check", "fmt"]
+        command: ["check", "fmt", "run"]
     steps:
       - name: Checkout
         uses: actions/checkout@v6

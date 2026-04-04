@@ -12,7 +12,7 @@ const REPO = "grpctestify-rust";
 const GITHUB_TOKEN_EXPR_RE = /^\$\{\{\s*github\.token\s*\}\}$/i;
 
 function input(name, fallback = "") {
-  const key = `INPUT_${name.replace(/ /g, "_").replace(/-/g, "_").toUpperCase()}`;
+  const key = `INPUT_${name.replace(/ /g, "_").toUpperCase()}`;
   const value = process.env[key];
   if (value === undefined || value === null || value === "") {
     return fallback;
